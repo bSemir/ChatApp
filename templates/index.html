@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatApp</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/jquery.min.js"></script>
+  </head>
+  <body style="text-align:center; font-family: Arial, serif; font-size: 14pt">
+    <script type="text/javascript">
+        // get current date function for later
+        // function ShowLocalDate() {   
+        //     let dNow = new Date();
+        //     let localdate= (dNow.getMonth()+1) + '/' + dNow.getDate() + '/' + dNow.getFullYear() + ' ' + dNow.getHours() + ':' + dNow.getMinutes();
+        //     //$('#currentDate').text(localdate)
+        //     return localdate.text();
+        // }
+      $(document).ready(function () {
+        // in case you want to connect other devices, replace 'localhost' with your ip address
+        let socket = io.connect("http://localhost:5000"); //connects to our backend
+        socket.on('connect', function () {
+          socket.send("User connected!");
+        });
+
+        //data that is going to be added to the div
+        socket.on('message', function (data) {
+          $('#messages').append($('<p>').text(data));
+        });
+
+        $('#sendBtn').on('click', function () {
+          socket.send($('#username').val() + ': ' + $('#message').val());
+          $('#message').val('');
+        });
+      });
+      //todo: zabraniti slanje prazne poruke i dodati vrijeme slanja poruke
+    </script>
+    <div id="messages" style="margin: 0 auto; width: 60%; text-align: left; min-height: 300px;"></div>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="text" id="message" placeholder="Message" />
+    <button id="sendBtn">Send</button>
+  </body>
+</html>
+
+<!-- error can occur if you use "" instead of '' (in lines 16-27) -->
